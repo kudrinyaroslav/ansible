@@ -1,0 +1,30 @@
+- name: playbook1
+  hosts: all
+  check_mode: no
+  become: yes
+  tasks:
+    - name: install apache2
+      yum: name=httpd update_cache=yes state=latest
+    
+    - name: start apache2
+      service: name=httpd state=started enabled=yes
+
+    - name: create index file
+      copy: 
+        dest: "/var/www/html/index.html" 
+        content: |
+          Welcome to my web server
+    
+    - name: start firewalld
+      service: name=firewalld state=started
+
+
+    - name: open ports for httpd
+      firewalld:
+        port: 80/tcp
+        zone: public
+        permanent: true
+        state: enabled
+        immediate: yes
+          
+

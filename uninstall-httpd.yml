@@ -1,0 +1,19 @@
+- name: playbook2
+  hosts: all
+  become: true
+  become_method: sudo
+  check_mode: no
+  tasks:
+    - name: uninstall httpd
+      yum: name=httpd state=absent
+    
+    - name: delete index.html
+      file: path='/var/www/html/index.html' state=absent
+    
+    - name: close ports for httpd
+      firewalld:
+        port: 80/tcp
+        zone: public
+        permanent: true
+        state: disabled
+        immediate: yes
