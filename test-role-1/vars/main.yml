@@ -1,0 +1,7 @@
+---
+# vars file for test-role-1
+index_file: index.html
+packages:
+  - httpd
+  - firewalld
+OS: CentOS

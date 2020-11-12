@@ -1,0 +1,17 @@
+---
+# handlers file for test-role-1
+  - name: httpd start
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+        - "{{ packages }}"
+    notify:
+      - open ports for httpd
+  
+  - name: open ports for httpd
+    firewalld:
+      port: 80/tcp
+      zone: public
+      permanent: true
+      state: enabled
+      immediate: yes
+  

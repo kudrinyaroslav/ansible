@@ -1,18 +1,39 @@
----
-- name: playbook2
+- name: Install and activate FTP
   hosts: all
-  become: true
-  become_method: sudo
-  check_mode: no
+  become: yes
   tasks:
-    - name: disable NetworkManager
-      service: name=NetworkManager state=stopped enabled=no
+  - name: install ftpd
+    yum:
+      name: vsftpd
+      state: latest
 
-    - name: add a new params
-      lineinfile:
-        path: /etc/default/grub
-        regexp: 'GRUB_CMDLINE_LINUX'
-        line: 'GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"'
+  - name: activate ftpd
+    service:
+      name: vsftpd
+      state: started
+      enabled: yes
+
+  - name: activate firewalld
+    service:
+      name: firewalld
+      state: started
     
-    - name: run grab2-mkconfig
-      command: /usr/sbin/grub2-mkconfig
+  - name: open ports
+    firewalld:
+      port: 21/tcp
+      state: enabled
+      permanent: true
+    with_items:
+  
+  - name: open service
+    firewalld:
+      service: ftp
+      state: enabled
+      permanent: true
+
+  - name: ftp reload
+    service:
+      name: firewalld
+      state: restarted
+
+

@@ -1,8 +1,6 @@
 - name: playbook2
   hosts: all
-  become: true
-  become_method: sudo
-  check_mode: no
+  become: yes
   tasks:
     - name: uninstall httpd
       yum: name=httpd state=absent

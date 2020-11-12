@@ -1,0 +1,21 @@
+---
+# tasks file for test-role-1
+    - name: install apache2
+      yum: name=httpd update_cache=yes state=latest
+      notify:
+        - httpd start
+    
+    - name: create index file
+      copy: 
+        dest: "/var/www/html/{{ index_file }}" 
+        content: |
+          Welcome to my web server
+
+    - name: temp
+      template:
+        src: hello_world.j2
+        dest: "/var/www/html/hello_world.html"
+      when: ansible_distribution == "{{ OS }}"
+    
+
+
